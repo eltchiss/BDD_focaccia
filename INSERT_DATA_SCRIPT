@@ -1,0 +1,123 @@
+
+-- ÉTAPE 1 : INSERTION DES TABLES PRINCIPALES (SANS CLÉ ÉTRANGÈRE)
+
+-- 3. Insertion des données dans la table 'marque'
+INSERT INTO marque (nom) VALUES
+('Coca-cola'),
+('Pepsico'),
+('Monster'),
+('Cristalline');
+
+-- 4. Insertion des données dans la table 'ingredient'
+INSERT INTO ingredient (nom) VALUES
+('Ail'),
+('Ananas'),
+('Artichaut'),
+('Bacon'),
+('Base Tomate'),
+('Base crème'),
+('Champignon'),
+('Chèvre'),
+('Cresson'),
+('Emmental'),
+('Gorgonzola'),
+('Jambon cuit'),
+('Jambon fumé'),
+('Oeuf'),
+('Oignon'),
+('Olive noire'),
+('Olive verte'),
+('Parmesan'),
+('Piment'),
+('Poivre'),
+('Pomme de terre'),
+('Raclette'),
+('Salami'),
+('Tomate cerise'),
+('Mozzarella');
+
+-- 5. Insertion des données dans la table 'focaccia'
+INSERT INTO focaccia (nom, prix) VALUES
+('Mozaccia', 9.80),
+('Gorgonzolaccia', 10.80),
+('Raclaccia', 8.90),
+('Emmentalaccia', 9.80),
+('Tradizione', 8.90),
+('Hawaienne', 11.20),
+('Américaine', 10.80),
+('Paysanne', 12.80);
+
+-- 6. Insertion des données dans la table 'menu'
+INSERT INTO menu (nom, prix) VALUES
+('Menu Mozaccia', 14.90),
+('Menu Gorgonzolaccia', 14.90),
+('Menu Raclaccia', 14.90),
+('Menu Emmentalaccia', 14.90),
+('Menu Tradizione', 14.90),
+('Menu Hawaienne', 14.90),
+('Menu Américaine', 14.90),
+('Menu Paysanne', 14.90);
+
+-- 7. Insertion des données dans la table 'client'
+INSERT INTO client (id_client, nom, email, code_postal) VALUES
+(1, 'Tifosi Client', 'test.client@mail.fr', 75001);
+
+
+-- #######################################################
+-- ÉTAPE 2 : INSERTION DES TABLES DÉPENDANTES
+-- #######################################################
+
+-- 8. Insertion des données dans la table 'boisson' (Dépend de marque)
+INSERT INTO boisson (nom, id_marque) VALUES
+('Coca-cola zéro', (SELECT id_marque FROM marque WHERE nom = 'Coca-cola')),
+('Coca-cola original', (SELECT id_marque FROM marque WHERE nom = 'Coca-cola')),
+('Fanta citron', (SELECT id_marque FROM marque WHERE nom = 'Coca-cola')),
+('Fanta orange', (SELECT id_marque FROM marque WHERE nom = 'Coca-cola')),
+('Capri-sun', (SELECT id_marque FROM marque WHERE nom = 'Coca-cola')),
+('Pepsi', (SELECT id_marque FROM marque WHERE nom = 'Pepsico')),
+('Pepsi Max Zéro', (SELECT id_marque FROM marque WHERE nom = 'Pepsico')),
+('Lipton zéro citron', (SELECT id_marque FROM marque WHERE nom = 'Pepsico')),
+('Lipton Peach', (SELECT id_marque FROM marque WHERE nom = 'Pepsico')),
+('Monster energy ultra gold', (SELECT id_marque FROM marque WHERE nom = 'Monster')),
+('Monster energy ultra blue', (SELECT id_marque FROM marque WHERE nom = 'Monster')),
+('Eau de source', (SELECT id_marque FROM marque WHERE nom = 'Cristalline'));
+
+
+-- #######################################################
+-- ÉTAPE 3 : INSERTION DES TABLES D'ASSOCIATION
+-- #######################################################
+
+-- 9. Insertion des données dans la table d’association 'comprend' (focaccia - ingredient)
+INSERT INTO comprend (id_focaccia, id_ingredient, quantite) VALUES
+(1, 5, 1), (1, 25, 120), (1, 9, 10), (1, 13, 50), (1, 1, 5), (1, 3, 30), (1, 7, 50), (1, 18, 10), (1, 20, 1), (1, 16, 10),
+(2, 5, 1), (2, 11, 120), (2, 9, 10), (2, 1, 5), (2, 7, 50), (2, 18, 10), (2, 20, 1), (2, 16, 10),
+(3, 5, 1), (3, 22, 150), (3, 9, 10), (3, 1, 5), (3, 7, 50), (3, 18, 10), (3, 20, 1),
+(4, 6, 1), (4, 10, 150), (4, 9, 10), (4, 7, 50), (4, 18, 10), (4, 20, 1), (4, 15, 20),
+(5, 5, 1), (5, 25, 100), (5, 9, 10), (5, 12, 50), (5, 7, 80), (5, 18, 10), (5, 20, 1), (5, 16, 10), (5, 17, 10),
+(6, 5, 1), (6, 25, 100), (6, 9, 10), (6, 4, 40), (6, 2, 60), (6, 19, 5), (6, 18, 10), (6, 20, 1), (6, 16, 10),
+(7, 5, 1), (7, 25, 100), (7, 9, 10), (7, 4, 40), (7, 21, 40), (7, 18, 10), (7, 20, 1), (7, 16, 10),
+(8, 6, 1), (8, 8, 100), (8, 9, 10), (8, 21, 40), (8, 13, 50), (8, 1, 5), (8, 3, 30), (8, 7, 50), (8, 18, 10), (8, 20, 1), (8, 16, 10), (8, 14, 1);
+
+
+-- 10. Insertion des données dans la table d’association 'est_constitue' (menu - focaccia)
+INSERT INTO est_constitue (id_menu, id_focaccia) VALUES
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8);
+
+
+-- 11. Insertion des données dans la table d’association 'contient' (menu - boisson)
+INSERT INTO contient (id_menu, id_boisson)
+SELECT
+    m.id_menu,
+    b.id_boisson
+FROM
+    menu m,
+    boisson b;
+
+
+-- 12. Insertion des données dans la table d’association 'achete' (client - menu)
+INSERT INTO achete (id_client, id_menu, date_achat) VALUES
+(1, 1, '2025-11-27'),
+(1, 5, '2025-11-27');
+
+-- 13. Réactivation des vérifications de clés étrangères
+SET FOREIGN_KEY_CHECKS = 1;
